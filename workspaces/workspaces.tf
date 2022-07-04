@@ -43,5 +43,5 @@ resource "tfe_workspace" "wordpress-compute" {
 }
 resource "tfe_run_trigger" "wordpress-compute-trigger" {
   workspace_id  = tfe_workspace.wordpress-compute.id
-  sourceable_id = tfe_workspace.wordpress-rdsgi.id
+  sourceable_id = tfe_workspace.wordpress-rds.id
 }
