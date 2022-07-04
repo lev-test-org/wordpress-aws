@@ -16,7 +16,7 @@ resource "tfe_variable" "vpc_cidr" {
   value           = "10.0.0.0/16"
   category        = "terraform"
   description     = "cidr of the vpc"
-  variable_set_id = tfe_variable_set.common_vars[0].id
+  variable_set_id = tfe_variable_set.common_vars.id
 }
 
 resource "tfe_variable" "tags" {
@@ -24,12 +24,12 @@ resource "tfe_variable" "tags" {
   value           = "{\n \"Terraform\" = \"true\" \n \"Environment\" = \"dev\" \n \"Owner\" = \"Lev\"\n}"
   category        = "terraform"
   description     = "tags for aws resources"
-  variable_set_id = tfe_variable_set.common_vars[0].id
+  variable_set_id = tfe_variable_set.common_vars.id
 }
 resource "tfe_variable" "name" {
   key             = "name"
   value           = "lev-wordpress"
   category        = "terraform"
   description     = "tags for aws resources"
-  variable_set_id = tfe_variable_set.common_vars[0].id
+  variable_set_id = tfe_variable_set.common_vars.id
 }
