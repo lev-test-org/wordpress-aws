@@ -5,10 +5,11 @@ data "tfe_workspace_ids" "all_wordpress" {
 }
 
 resource "tfe_variable_set" "common_vars" {
+  count = length(data.tfe_workspace_ids.all_wordpress) == 0 ? 0 : 1
   name          = "Wordpress vars"
   description   = "Variables shared for multiple workspaces of wordpress project"
   organization  = "TeraSky"
-  workspace_ids = length(data.tfe_workspace_ids.all_wordpress) == 0 ? [""] : [data.tfe_workspace_ids.all_wordpress]
+  workspace_ids = [data.tfe_workspace_ids.all_wordpress]
 }
 
 resource "tfe_variable" "vpc_cidr" {
