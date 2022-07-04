@@ -24,6 +24,10 @@ resource "tfe_workspace" "wordpress-rds" {
     oauth_token_id = "ot-V5uTyGKzPXanNBBe"
   }
 }
+resource "tfe_run_trigger" "wordpress-rds-trigger" {
+  workspace_id  = tfe_workspace.wordpress-rds.id
+  sourceable_id = tfe_workspace.wordpress-vpc.id
+}
 resource "tfe_workspace" "wordpress-compute" {
   name         = "wordpress-compute"
   organization = "TeraSky"
@@ -36,4 +40,8 @@ resource "tfe_workspace" "wordpress-compute" {
     branch = "new_features"
     oauth_token_id = "ot-V5uTyGKzPXanNBBe"
   }
+}
+resource "tfe_run_trigger" "wordpress-compute-trigger" {
+  workspace_id  = tfe_workspace.wordpress-compute.id
+  sourceable_id = tfe_workspace.wordpress-rdsgi.id
 }
