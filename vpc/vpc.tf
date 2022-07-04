@@ -116,6 +116,6 @@ resource "aws_security_group_rule" "outgoing_traffic_for_elb" {
 
 locals {
   #for convention public subnets are x.x.[10,11,12].x and private are x.x.[100,101,102].x
-  public_subnets = [ for network in range(length(var.azs)) : cidrsubnet(var.vpc_cidr, 8, (10+network))]
-  private_subnets = [ for network in range(length(var.azs)) : cidrsubnet(var.vpc_cidr, 8, (100+network))]
+  public_subnets = [ for network in range(length(data.aws_availability_zones.azs.zone_ids)) : cidrsubnet(var.vpc_cidr, 8, (10+network))]
+  private_subnets = [ for network in range(length(data.aws_availability_zones.azs.zone_ids)) : cidrsubnet(var.vpc_cidr, 8, (100+network))]
 }
