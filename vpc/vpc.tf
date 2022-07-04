@@ -4,7 +4,7 @@ module "vpc" {
   name    = "wordpress"
   cidr    = var.vpc_cidr
 
-  azs             = var.azs
+  azs             = data.aws_availability_zones.azs.zone_ids
   public_subnets  = local.public_subnets
   private_subnets = local.private_subnets
 
@@ -31,9 +31,12 @@ module "vpc" {
   )
 }
 
+data "aws_availability_zones" "azs" {
+  state = "available"
+}
 resource "aws_security_group" "rds_sg" {
-  name        = "rds_sg"
-  description = "allow incomming traffic for RDS"
+  name        = "${var.name}-rds_sg"
+  description = "allow incoming traffic for RDS"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
@@ -53,13 +56,13 @@ resource "aws_security_group" "rds_sg" {
   tags = merge(
     var.tags,
     {
-      Name = "allow-wordpress-to-rds"
+      Name = "${var.name}-allow-wordpress-to-rds"
     },
   )
 }
 
 resource "aws_security_group" "wordpress_sg" {
-  name        = "wordpress_sg"
+  name        = "${var.name}-wordpress_sg"
   description = "allow incomming traffic from ELB"
   vpc_id      = module.vpc.vpc_id
   ingress {
@@ -78,13 +81,13 @@ resource "aws_security_group" "wordpress_sg" {
   tags = merge(
     var.tags,
     {
-      Name = "allow-http-from-elb"
+      Name = "${var.name}-allow-http-from-elb"
     },
   )
 }
 
 resource "aws_security_group" "elb_sg" {
-  name        = "elb_sg"
+  name        = "${var.name}-elb_sg"
   description = "allow incomming traffic from the internet and to wordpress servers"
   vpc_id      = module.vpc.vpc_id
   ingress {
@@ -97,7 +100,7 @@ resource "aws_security_group" "elb_sg" {
   tags = merge(
     var.tags,
     {
-      Name = "allow-http-from-internet-to-elb"
+      Name = "${var.name}-allow-http-from-internet-to-elb"
     },
   )
 }
