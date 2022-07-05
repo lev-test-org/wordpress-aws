@@ -2,14 +2,14 @@ module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "4.3.0"
 
-  identifier = "wordpress-db"
+  identifier = "${var.name}-wordpress-db"
 
   engine            = "mysql"
   engine_version    = "8.0.28"
   instance_class    = "db.t4g.micro"
   allocated_storage = 5
 
-  db_name  = "wordpress"
+  db_name  = "${var.name}-wordpress"
   username = "user"
   port     = "3306"
 
@@ -22,11 +22,12 @@ module "db" {
 
   create_monitoring_role = false
 
-  tags = {
-    Terraform = "true"
-    Environment = "dev"
-    Owner = "Lev"
-  }
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.name}-rds"
+    },
+  )
 
   # DB subnet group
   create_db_subnet_group = true
