@@ -20,6 +20,7 @@ resource "tfe_variable" "vpc_cidr" {
 }
 
 resource "tfe_variable" "tags" {
+  hcl = true
   key             = "tags"
   value           = "{\n \"Terraform\" = \"true\" \n \"Environment\" = \"dev\" \n \"Owner\" = \"Lev\"\n}"
   category        = "terraform"

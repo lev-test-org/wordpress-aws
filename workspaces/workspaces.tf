@@ -10,6 +10,7 @@ resource "tfe_workspace" "wordpress-vpc" {
     branch = "new_features"
     oauth_token_id = "ot-V5uTyGKzPXanNBBe"
   }
+  remote_state_consumer_ids = [tfe_workspace.wordpress-rds.id,tfe_workspace.wordpress-compute.id]
 }
 resource "tfe_workspace" "wordpress-rds" {
   name         = "wordpress-rds"
@@ -23,6 +24,7 @@ resource "tfe_workspace" "wordpress-rds" {
     branch = "new_features"
     oauth_token_id = "ot-V5uTyGKzPXanNBBe"
   }
+  remote_state_consumer_ids = [tfe_workspace.wordpress-compute.id]
 }
 resource "tfe_run_trigger" "wordpress-rds-trigger" {
   workspace_id  = tfe_workspace.wordpress-rds.id
