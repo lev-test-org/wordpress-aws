@@ -2,7 +2,7 @@ module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "4.3.0"
 
-  identifier = "${var.name}-wordpress-db"
+  identifier = "${trim(var.name,"-")}"
 
   engine            = "mysql"
   engine_version    = "8.0.28"
