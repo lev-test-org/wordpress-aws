@@ -12,19 +12,8 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-#resource "tls_private_key" "wordpress_key" {
-#  algorithm = "RSA"
-#  rsa_bits  = 4096
-#}
-#
-#resource "aws_key_pair" "wordpress_key" {
-#  key_name   = "wordpress-key"
-#  public_key = tls_private_key.wordpress_key.public_key_openssh
-#}
-
 resource "aws_launch_template" "wordpress_launch_template" {
-  name = "wordpress-server-template"
-  //key_name = "wordpress-key"
+  name = "${var.name}-server-template"
   iam_instance_profile {
     arn = aws_iam_instance_profile.ssm-iam-profile.arn
   }
@@ -45,11 +34,12 @@ resource "aws_launch_template" "wordpress_launch_template" {
   vpc_security_group_ids = [data.terraform_remote_state.vpc.outputs.wordpress_sg.id]
   tag_specifications {
     resource_type = "instance"
-    tags = {
-      Name   = "wordpress-server"
-      Env    = "dev"
-      Ownder = "Lev"
-    }
+    tags = merge(
+      var.tags,
+      {
+        Name = "${var.name}-server"
+      },
+    )
   }
   user_data = base64encode(templatefile("${path.module}/user-data.sh", { db_host = data.terraform_remote_state.rds.outputs.rds.db_instance_endpoint, username = data.terraform_remote_state.rds.outputs.rds.db_instance_username, password = data.terraform_remote_state.rds.outputs.rds.db_instance_password }))
 }
@@ -73,7 +63,7 @@ resource "aws_autoscaling_group" "wordpress_asg" {
 }
 
 resource "aws_lb" "wordpress" {
-  name               = "wordpress-lb"
+  name               = "${var.name}-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [data.terraform_remote_state.vpc.outputs.elb_sg.id]
@@ -81,16 +71,17 @@ resource "aws_lb" "wordpress" {
 
   enable_deletion_protection = false
 
-  tags = {
-    Environment = "dev"
-    Owner       = "Lev"
-  }
+  tags = merge(
+      var.tags,
+      {
+        Name = "${var.name}-lb"
+      },
+    )
 }
 resource "aws_lb_listener" "wordpress_lb_listener" {
   load_balancer_arn = aws_lb.wordpress.arn
   port              = "80"
   protocol          = "HTTP"
-  //ssl_policy        = "ELBSecurityPolicy-2016-08"
 
   default_action {
     type             = "forward"
@@ -99,7 +90,7 @@ resource "aws_lb_listener" "wordpress_lb_listener" {
 }
 
 resource "aws_lb_target_group" "wordpress_tg" {
-  name     = "wordpress-tg"
+  name     = "${var.name}-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.terraform_remote_state.vpc.outputs.vpc.vpc_id
@@ -111,12 +102,12 @@ resource "aws_autoscaling_attachment" "asg_attachment_wordpress_tg" {
 }
 
 resource "aws_iam_instance_profile" "ssm-iam-profile" {
-  name = "ec2_profile"
+  name = "${var.name}-ec2_profile"
   role = aws_iam_role.ssm-iam-role.name
 }
 
 resource "aws_iam_role" "ssm-iam-role" {
-  name               = "dev-ssm-role"
+  name               = "${var.name}-dev-ssm-role"
   description        = "The role for the developer resources EC2"
   assume_role_policy = <<EOF
 {
@@ -128,9 +119,12 @@ resource "aws_iam_role" "ssm-iam-role" {
 }
 }
 EOF
-  tags = {
-    stack = "test"
-  }
+    tags = merge(
+      var.tags,
+      {
+        Name = "${var.name}-role"
+      },
+    )
 }
 resource "aws_iam_role_policy_attachment" "dev-resources-ssm-policy" {
   role       = aws_iam_role.ssm-iam-role.name
@@ -143,7 +137,7 @@ data "aws_route53_zone" "lev_labs" {
 
 resource "aws_route53_record" "wordpress" {
   zone_id = data.aws_route53_zone.lev_labs.zone_id
-  name    = "wordpress.lev-labs.com"
+  name    = "${var.name}.lev-labs.com"
   type    = "CNAME"
   ttl     = "300"
   records = [aws_lb.wordpress.dns_name]
