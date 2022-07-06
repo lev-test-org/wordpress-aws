@@ -75,7 +75,7 @@ resource "aws_autoscaling_policy" "predictive_policy" {
     }
   }
 }
-g
+
 resource "aws_autoscaling_group" "wordpress_asg" {
   vpc_zone_identifier = data.terraform_remote_state.vpc.outputs.vpc.private_subnets
   desired_capacity    = 2
