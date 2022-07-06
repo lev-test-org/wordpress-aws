@@ -100,17 +100,12 @@ resource "aws_lb_listener" "wordpress_lb_listener" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+  certificate_arn   = aws_acm_certificate.cert.arng
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.wordpress_tg.arn
   }
-}
-
-resource "aws_lb_listener_certificate" "listener_certificate" {
-  listener_arn    = aws_lb_listener.wordpress_lb_listener.arn
-  certificate_arn = aws_acm_certificate.cert.arn
 }
 
 resource "aws_lb_target_group" "wordpress_tg" {
@@ -175,7 +170,7 @@ resource "aws_acm_certificate" "cert" {
   }
 }
 
-resource "aws_route53_record" "example" {
+resource "aws_route53_record" "validation_record" {
   for_each = {
     for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
