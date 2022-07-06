@@ -44,6 +44,21 @@ resource "aws_launch_template" "wordpress_launch_template" {
   user_data = base64encode(templatefile("${path.module}/user-data.sh", { db_host = data.terraform_remote_state.rds.outputs.rds.db_instance_endpoint, username = data.terraform_remote_state.rds.outputs.rds.db_instance_username, password = data.terraform_remote_state.rds.outputs.rds.db_instance_password }))
 }
 
+resource "aws_autoscaling_policy" "predictive_autoscaling_policy" {
+  autoscaling_group_name = aws_autoscaling_group.wordpress_asg.name
+  name                   = "${var.name}-autoscaling-policy"
+  policy_type            = "PredictiveScaling"
+  predictive_scaling_configuration {
+    metric_specification {
+      target_value = 10
+      predefined_load_metric_specification {
+        predefined_metric_type = "ASGTotalCPUUtilization"
+        resource_label = "${var.name}-tg"
+      }
+    }
+  }
+}
+
 resource "aws_autoscaling_group" "wordpress_asg" {
   vpc_zone_identifier = data.terraform_remote_state.vpc.outputs.vpc.private_subnets
   desired_capacity    = 2
@@ -62,6 +77,7 @@ resource "aws_autoscaling_group" "wordpress_asg" {
   }
 }
 
+
 resource "aws_lb" "wordpress" {
   name               = "${var.name}-lb"
   internal           = false
@@ -78,15 +94,23 @@ resource "aws_lb" "wordpress" {
       },
     )
 }
+
 resource "aws_lb_listener" "wordpress_lb_listener" {
   load_balancer_arn = aws_lb.wordpress.arn
-  port              = "80"
-  protocol          = "HTTP"
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.wordpress_tg.arn
   }
+}
+
+resource "aws_lb_listener_certificate" "listener_certificate" {
+  listener_arn    = aws_lb_listener.wordpress_lb_listener.arn
+  certificate_arn = aws_acm_certificate.cert.arn
 }
 
 resource "aws_lb_target_group" "wordpress_tg" {
@@ -133,6 +157,22 @@ resource "aws_iam_role_policy_attachment" "dev-resources-ssm-policy" {
 
 data "aws_route53_zone" "lev_labs" {
   name         = "lev-labs.com."
+}
+
+resource "aws_acm_certificate" "cert" {
+  domain_name       = "${var.name}.lev-labs.com"
+  validation_method = "DNS"
+
+  tags = merge(
+      var.tags,
+      {
+        Name = "${var.name}-certificate"
+      },
+  )
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_route53_record" "wordpress" {
