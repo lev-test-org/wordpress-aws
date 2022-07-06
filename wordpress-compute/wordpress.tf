@@ -44,21 +44,38 @@ resource "aws_launch_template" "wordpress_launch_template" {
   user_data = base64encode(templatefile("${path.module}/user-data.sh", { db_host = data.terraform_remote_state.rds.outputs.rds.db_instance_endpoint, username = data.terraform_remote_state.rds.outputs.rds.db_instance_username, password = data.terraform_remote_state.rds.outputs.rds.db_instance_password }))
 }
 
-resource "aws_autoscaling_policy" "predictive_autoscaling_policy" {
+
+resource "aws_autoscaling_policy" "predictive_policy" {
   autoscaling_group_name = aws_autoscaling_group.wordpress_asg.name
-  name                   = "${var.name}-autoscaling-policy"
+  name                   = "${var.name}"
   policy_type            = "PredictiveScaling"
   predictive_scaling_configuration {
     metric_specification {
       target_value = 10
       predefined_load_metric_specification {
         predefined_metric_type = "ASGTotalCPUUtilization"
-        resource_label = "${var.name}-tg"
+        resource_label         = "testLabel"
+      }
+      customized_scaling_metric_specification {
+        metric_data_queries {
+          id = "scaling"
+          metric_stat {
+            metric {
+              metric_name = "CPUUtilization"
+              namespace   = "AWS/EC2"
+              dimensions {
+                name  = "AutoScalingGroupName"
+                value = aws_autoscaling_group.wordpress_asg.name
+              }
+            }
+            stat = "Average"
+          }
+        }
       }
     }
   }
 }
-
+g
 resource "aws_autoscaling_group" "wordpress_asg" {
   vpc_zone_identifier = data.terraform_remote_state.vpc.outputs.vpc.private_subnets
   desired_capacity    = 2
