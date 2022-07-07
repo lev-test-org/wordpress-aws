@@ -1,6 +1,6 @@
 resource aws_lambda_function db_initalizer {
  function_name = "${var.name}-lambda"
- image_uri = "572445141948.dkr.ecr.eu-west-1.amazonaws.com/db_initializer:v1g"
+ image_uri = "572445141948.dkr.ecr.eu-west-1.amazonaws.com/db_initializer:v1"
  package_type = "Image"
  role          = aws_iam_role.iam_for_lambda.arn
  environment {
