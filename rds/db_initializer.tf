@@ -9,6 +9,7 @@ resource aws_lambda_function db_initalizer {
       DBUSER= module.db.db_instance_username
       DBPASS= module.db.db_instance_password
       DBHOST= module.db.db_instance_endpoint
+      DBNAME= module.db.db_instance_name
     }
   }
   vpc_config {
