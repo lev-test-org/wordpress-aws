@@ -12,8 +12,7 @@ resource aws_lambda_function db_initalizer {
     }
   }
   vpc_config {
-    # Every subnet should be able to reach an EFS mount target in the same Availability Zone. Cross-AZ mounts are not permitted.
-    subnet_ids         = [data.terraform_remote_state.vpc.outputs.vpc.private_subnets]
+    subnet_ids         = data.terraform_remote_state.vpc.outputs.vpc.private_subnets
     security_group_ids = [data.terraform_remote_state.vpc.outputs.db_initializer_sg.id]
   }
 }
