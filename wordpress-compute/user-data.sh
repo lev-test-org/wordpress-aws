@@ -38,7 +38,7 @@ cat > /var/www/html/wp-config.php <<EOF
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', 'wordpress' );
+define( 'DB_NAME', '${dbname}' );
 
 /** Database username */
 define( 'DB_USER', '${username}' );

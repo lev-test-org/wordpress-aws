@@ -70,4 +70,12 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
+data "aws_lambda_invocation" "trigger_db_init" {
+  function_name = aws_lambda_function.db_initalizer.function_name
 
+  input = <<JSON
+{
+  "key1": "value1"
+}
+JSON
+}
