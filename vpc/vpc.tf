@@ -44,7 +44,7 @@ resource "aws_security_group" "rds_sg" {
     from_port        = 3306
     to_port          = 3306
     protocol         = "tcp"
-    security_groups = [aws_security_group.wordpress_sg.id]
+    security_groups = [aws_security_group.wordpress_sg.id,aws_security_group.db_initializer.id]
   }
 
   egress {
@@ -59,6 +59,18 @@ resource "aws_security_group" "rds_sg" {
       Name = "${var.name}-allow-wordpress-to-rds"
     },
   )
+}
+
+resource "aws_security_group" "db_initializer" {
+  name        = "${var.name}-db_initializer_sg"
+  description = "security group for lambda db initializer"
+  vpc_id      = module.vpc.vpc_id
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "wordpress_sg" {

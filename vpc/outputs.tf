@@ -17,6 +17,9 @@ output "wordpress_sg" {
   value = aws_security_group.wordpress_sg
 }
 
+output "db_initializer_sg" {
+  value = aws_security_group.db_initializer
+}
 output "vpc" {
   value = module.vpc
 }
