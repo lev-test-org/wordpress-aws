@@ -1,8 +1,4 @@
 #!/bin/bash
-if [ ! -f /tmp/wp-cli-cache ]
-then
-    mkdir /tmp/wp-cli-cache
-fi
 export WP_CLI_CACHE_DIR="/tmp/wp-cli-cache"
 echo "TESTING CONTAINER REFRESH"
 cd /tmp
