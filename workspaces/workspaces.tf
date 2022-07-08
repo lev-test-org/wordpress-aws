@@ -12,6 +12,7 @@ resource "tfe_workspace" "wordpress-vpc" {
   }
   remote_state_consumer_ids = [tfe_workspace.wordpress-rds.id,tfe_workspace.wordpress-compute.id]
 }
+
 resource "tfe_workspace" "wordpress-rds" {
   name         = "wordpress-rds"
   organization = "TeraSky"
@@ -30,6 +31,7 @@ resource "tfe_run_trigger" "wordpress-rds-trigger" {
   workspace_id  = tfe_workspace.wordpress-rds.id
   sourceable_id = tfe_workspace.wordpress-vpc.id
 }
+
 resource "tfe_workspace" "wordpress-compute" {
   name         = "wordpress-compute"
   organization = "TeraSky"
@@ -43,6 +45,7 @@ resource "tfe_workspace" "wordpress-compute" {
     oauth_token_id = "ot-V5uTyGKzPXanNBBe"
   }
 }
+
 resource "tfe_run_trigger" "wordpress-compute-trigger" {
   workspace_id  = tfe_workspace.wordpress-compute.id
   sourceable_id = tfe_workspace.wordpress-rds.id
