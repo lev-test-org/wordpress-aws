@@ -2,7 +2,7 @@
 echo "changing dir"
 cd /tmp
 echo "$PWD"
-HEADERS="$(mktemp)"
+HEADERS="$(mktemp /tmp/)"
 EVENT_DATA=$(curl -sS -LD "$HEADERS" -X GET "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/next")
 REQUEST_ID=$(grep -Fi Lambda-Runtime-Aws-Request-Id "$HEADERS" | tr -d '[:space:]' | cut -d: -f2)
 echo "running /usr/local/bin/wp core download"
