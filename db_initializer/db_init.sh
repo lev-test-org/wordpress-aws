@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "TESTING CONTAINER REFRESH"
 cd /tmp
 HEADERS="$(mktemp -p /tmp)"
 EVENT_DATA=$(curl -sS -LD "$HEADERS" -X GET "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/next")
