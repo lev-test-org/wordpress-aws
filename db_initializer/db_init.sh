@@ -8,7 +8,7 @@ EVENT_DATA=$(curl -sS -LD "$HEADERS" -X GET "http://${AWS_LAMBDA_RUNTIME_API}/20
 REQUEST_ID=$(grep -Fi Lambda-Runtime-Aws-Request-Id "$HEADERS" | tr -d '[:space:]' | cut -d: -f2)
 #echo "request id $REQUEST_ID"
 #echo "running /usr/local/bin/wp core download"
-#/usr/local/bin/wp core --debug download --force
+/usr/local/bin/wp core download --force
 #echo "running wp config create"
 #/usr/local/bin/wp config create --debug --force --path=. --dbname=${DBNAME} --dbuser=${DBUSER} --dbpass=${DBPASS} --dbhost=${DBHOST} --skip-check
 #echo "running wp core install"
