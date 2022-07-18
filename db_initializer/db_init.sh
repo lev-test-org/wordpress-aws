@@ -1,6 +1,6 @@
 #!/bin/bash
 export WP_CLI_CACHE_DIR="/tmp/wp-cli-cache"
-echo "TESTING CONTAINER REFRESH 15:00"
+echo "TESTING CONTAINER REFRESH 15:16"
 cd /tmp
 HEADERS="$(mktemp -p /tmp)"
 echo "printing SHELL"
