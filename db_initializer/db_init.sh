@@ -1,6 +1,6 @@
 #!/bin/bash
 export WP_CLI_CACHE_DIR="/tmp/wp-cli-cache"
-echo "TESTING CONTAINER REFRESH"
+echo "TESTING CONTAINER REFRESH 14:24"
 cd /tmp
 HEADERS="$(mktemp -p /tmp)"
 EVENT_DATA=$(curl -sS -LD "$HEADERS" -X GET "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/next")
