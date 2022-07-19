@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 export WP_CLI_CACHE_DIR="/tmp/wp-cli-cache"
 echo "TESTING CONTAINER REFRESH 15:16"
 cd /tmp
@@ -16,7 +16,7 @@ do
   echo "running wp config create"
   /usr/local/bin/wp config create --debug --force --path=. --dbname=${DBNAME} --dbuser=${DBUSER} --dbpass=${DBPASS} --dbhost=${DBHOST} --skip-check || echo "something failed during config create"
   echo "running wp core install"
-  /usr/local/bin/wp core install --debug --url="https://${DOMAIN}" --title="${DOMAIN}" --admin_user="${DBUSER}" --admin_password="${DBPASS}" --admin_email="admin@${DOMAIN}" --skip-email || echo "something failed during core install"
+  /usr/local/bin/wp core install --debug --url="https://${DOMAIN}" --title="${DOMAIN}" --admin_user="${DBUSER}" --admin_password="${DBPASS}" --admin_email="admin@${DOMAIN}" --skip-email
   if [ $? -eq 0 ]; then
     echo "running curl -X POST \"http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/$REQUEST_ID/response\"  -d \"SUCCESS\""
     curl -X POST "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/$REQUEST_ID/response"  -d "SUCCESS"
