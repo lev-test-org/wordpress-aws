@@ -3,6 +3,7 @@ resource aws_lambda_function db_initalizer {
  image_uri = "572445141948.dkr.ecr.eu-west-1.amazonaws.com/db_initializer:v1"
  package_type = "Image"
  role          = aws_iam_role.iam_for_lambda.arn
+ timeout = 120
  environment {
     variables = {
       DOMAIN = "${var.name}.lev-labs.com"
