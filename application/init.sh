@@ -22,10 +22,10 @@ sudo chown -R www-data:www-data /var/www/html/
 sudo chmod -R 755 /var/www/html/
 sudo rm /var/www/html/index.html
 #TODO - replace username and password
-sed -i .bak "s/_REPLACE_DBNAME_/${DBNAME}/g"
-sed -i .bak "s/_REPLACE_DBHOST_/${DB_HOST}/g"
-sed -i .bak "s/_REPLACE_USERNAME_/${USERNAME}/g"
-sed -i .bak "s/_REPLACE_PASSWORD_/${PASSWORD}/g"
+sed -i "s/_REPLACE_DBNAME_/${DBNAME}/g" wordpress-aws/application/wp-config.php
+sed -i  "s/_REPLACE_DBHOST_/${DB_HOST}/g" wordpress-aws/application/wp-config.php
+sed -i  "s/_REPLACE_USERNAME_/${USERNAME}/g" wordpress-aws/application/wp-config.php
+sed -i  "s/_REPLACE_PASSWORD_/${PASSWORD}/g" wordpress-aws/application/wp-config.php
 cp wordpress-aws/application/wp-config.php /var/www/html/wp-config.php
 cp wordpress-aws/application/wordpress.conf /etc/apache2/sites-available/wordpress.conf
 sudo a2ensite wordpress
