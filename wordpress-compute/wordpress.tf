@@ -167,7 +167,7 @@ resource "aws_iam_role_policy_attachment" "dev-resources-ssm-policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_role_policy_attachment" "dev-resources-ssm-policy" {
+resource "aws_iam_role_policy_attachment" "dev-resources-secret-manager-policy" {
   role       = aws_iam_role.wordpress-iam-role.name
   policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }
