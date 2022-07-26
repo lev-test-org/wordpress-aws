@@ -1,19 +1,18 @@
 #!/bin/bash
 #TODO - handle region more generically
-export AWS_DEFAULT_REGION=eu-west-1
-export DBNAME="${dbname}"
-export DB_HOST="${db_host}"
-export USERNAME="$(aws secretsmanager get-secret-value --secret-id lev-wordpress-rds-user)"
-export PASSWORD="$(aws secretsmanager get-secret-value --secret-id lev-wordpress-rds-password)"
-aws secretsmanager get-secret-value --secret-id lev-wordpress-rds-password
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get install -y apache2 apache2-utils mysql-client php libapache2-mod-php php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip awscli
+sudo apt-get install -y apache2 apache2-utils mysql-client php libapache2-mod-php php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip awscli jq
 sudo systemctl enable apache2
 sudo systemctl start apache2
 sudo systemctl status apache2
 sudo ufw allow in "Apache"
 sudo ufw status
+export AWS_DEFAULT_REGION=eu-west-1
+export DBNAME="${dbname}"
+export DB_HOST="${db_host}"
+export USERNAME="$(aws secretsmanager get-secret-value --secret-id lev-wordpress-rds-user |  jq -r .SecretString )"
+export PASSWORD="$(aws secretsmanager get-secret-value --secret-id lev-wordpress-rds-password |  jq -r .SecretString )"
 cd /tmp
 wget -c http://wordpress.org/latest.tar.gz
 tar -xzvf latest.tar.gz
