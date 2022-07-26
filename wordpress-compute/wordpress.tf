@@ -139,10 +139,10 @@ resource "aws_autoscaling_attachment" "asg_attachment_wordpress_tg" {
 
 resource "aws_iam_instance_profile" "ssm-iam-profile" {
   name = "${var.name}-ec2_profile"
-  role = aws_iam_role.ssm-iam-role.name
+  role = aws_iam_role.wordpress-iam-role.name
 }
 
-resource "aws_iam_role" "ssm-iam-role" {
+resource "aws_iam_role" "wordpress-iam-role" {
   name               = "${var.name}-dev-ssm-role"
   description        = "The role for the developer resources EC2"
   assume_role_policy = <<EOF
@@ -163,9 +163,15 @@ EOF
     )
 }
 resource "aws_iam_role_policy_attachment" "dev-resources-ssm-policy" {
-  role       = aws_iam_role.ssm-iam-role.name
+  role       = aws_iam_role.wordpress-iam-role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
+
+resource "aws_iam_role_policy_attachment" "dev-resources-ssm-policy" {
+  role       = aws_iam_role.wordpress-iam-role.name
+  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+}
+
 
 data "aws_route53_zone" "lev_labs" {
   name         = "lev-labs.com."
