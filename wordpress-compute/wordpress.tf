@@ -15,7 +15,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_launch_template" "wordpress_launch_template" {
   name = "${var.name}-server-template"
   iam_instance_profile {
-    arn = aws_iam_instance_profile.ssm-iam-profile.arn
+    arn = aws_iam_instance_profile.wordpress-iam-profile.arn
   }
   block_device_mappings {
     device_name = "/dev/sda1"
@@ -137,7 +137,7 @@ resource "aws_autoscaling_attachment" "asg_attachment_wordpress_tg" {
   lb_target_group_arn    = aws_lb_target_group.wordpress_tg.arn
 }
 
-resource "aws_iam_instance_profile" "ssm-iam-profile" {
+resource "aws_iam_instance_profile" "wordpress-iam-profile" {
   name = "${var.name}-ec2_profile"
   role = aws_iam_role.wordpress-iam-role.name
 }
