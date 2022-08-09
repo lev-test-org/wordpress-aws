@@ -1,7 +1,6 @@
 #!/bin/bash
 #TODO - handle region more generically
 sudo apt-get update
-sudo apt-get upgrade
 sudo apt-get install -y apache2 apache2-utils mysql-client php libapache2-mod-php php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip awscli jq
 sudo systemctl enable apache2
 sudo systemctl start apache2
