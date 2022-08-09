@@ -8,8 +8,6 @@ sudo systemctl status apache2
 sudo ufw allow in "Apache"
 sudo ufw status
 export AWS_DEFAULT_REGION=eu-west-1
-#export DBNAME="${dbname}"
-#export DB_HOST="${db_host}"
 export USERNAME="$(aws secretsmanager get-secret-value --secret-id lev-wordpress-rds-user |  jq -r .SecretString )"
 export PASSWORD="$(aws secretsmanager get-secret-value --secret-id lev-wordpress-rds-password |  jq -r .SecretString )"
 cd /tmp
