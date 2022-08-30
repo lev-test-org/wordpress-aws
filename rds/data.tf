@@ -4,7 +4,7 @@ data "terraform_remote_state" "vpc" {
   config = {
     organization = "TeraSky"
     workspaces = {
-      name = "wordpress-vpc"
+      name = "${var.env}-wordpress-vpc"
     }
   }
 }
