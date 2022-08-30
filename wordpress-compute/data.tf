@@ -15,7 +15,7 @@ data "terraform_remote_state" "rds" {
   config = {
     organization = "TeraSky"
     workspaces = {
-      name = "wordpress-rds"
+      name = "${var.env}-gwordpress-rds"
     }
   }
 }
