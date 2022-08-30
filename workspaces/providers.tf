@@ -1,10 +1,5 @@
 terraform {
-    backend "remote" {
-    organization = "TeraSky"
-      workspaces {
-        name = "wordpress-aws-workspaces"
-      }
-    }
+  backend "remote" {}
   required_providers {
     tfe = {
       version = "~> 0.30.2"
