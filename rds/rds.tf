@@ -9,7 +9,7 @@ module "db" {
   instance_class    = "db.t4g.micro"
   allocated_storage = 5
 
-  db_name  = "${replace(var.name,"-","")}"
+  db_name  = "${replace(var.name,"-","")}-${replace(var.env,"-","")}"
   username = "user"
   port     = "3306"
 
