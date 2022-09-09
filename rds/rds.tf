@@ -19,7 +19,7 @@ module "db" {
 
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
-g
+
   create_monitoring_role = false
 
   tags = merge(
