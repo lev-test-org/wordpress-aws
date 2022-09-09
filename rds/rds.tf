@@ -2,7 +2,7 @@ module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "4.3.0"
 
-  identifier = "${replace(var.name,"-","")}"
+  identifier = "${replace(var.name,"-","")}-${replace(var.env,"-","")}"
 
   engine            = "mysql"
   engine_version    = "8.0.28"
@@ -19,7 +19,7 @@ module "db" {
 
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
-
+g
   create_monitoring_role = false
 
   tags = merge(
