@@ -2,14 +2,14 @@ module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "4.3.0"
 
-  identifier = "${replace(var.name,"-","")}-${replace(var.env,"-","")}"
+  identifier = "${replace(var.name,"-","")}-${replace(var.env,"_","")}"
 
   engine            = "mysql"
   engine_version    = "8.0.28"
   instance_class    = "db.t4g.micro"
   allocated_storage = 5
 
-  db_name  = "${replace(var.name,"-","")}-${replace(var.env,"-","")}"
+  db_name  = "${replace(var.name,"-","")}-${replace(var.env,"_","")}"
   username = "user"
   port     = "3306"
 
