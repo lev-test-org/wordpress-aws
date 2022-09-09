@@ -1,5 +1,5 @@
 locals {
-  dbname=replace(concat(var.name,var.env),"-","_")
+  dbname=replace(replace(concat("${var.name}${var.env}"),"_"),"-")
 }
 module "db" {
   source  = "terraform-aws-modules/rds/aws"
