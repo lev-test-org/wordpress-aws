@@ -22,3 +22,7 @@ variable "branch" {
 variable "env" {
   type = string
 }
+
+variable "cred_var_set" {
+  type = string
+}

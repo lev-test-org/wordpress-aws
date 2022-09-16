@@ -17,6 +17,7 @@ module "db" {
   port     = "3306"
 
   iam_database_authentication_enabled = true
+  skip_final_snapshot = true
 
   vpc_security_group_ids = [data.terraform_remote_state.vpc.outputs.rds_sg.id]
 
