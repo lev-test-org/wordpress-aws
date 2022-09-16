@@ -2,6 +2,7 @@
 export DBNAME="${dbname}"
 export DB_HOST="${db_host}"
 export CURRENT_ENV="${current_env}"
+export NAME="${NAME}"
 cd /tmp
 git clone https://github.com/lev-test-org/wordpress-aws.git
 cd wordpress-aws
