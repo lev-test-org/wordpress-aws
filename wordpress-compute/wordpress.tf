@@ -41,7 +41,7 @@ resource "aws_launch_template" "wordpress_launch_template" {
       },
     )
   }
-  user_data = base64encode(templatefile("${path.module}/user-data.sh", { db_host = data.terraform_remote_state.rds.outputs.rds.db_instance_endpoint, username = data.terraform_remote_state.rds.outputs.rds.db_instance_username, password = data.terraform_remote_state.rds.outputs.rds.db_instance_password, dbname = data.terraform_remote_state.rds.outputs.rds.db_instance_name, env= var.env }))
+  user_data = base64encode(templatefile("${path.module}/user-data.sh", { db_host = data.terraform_remote_state.rds.outputs.rds.db_instance_endpoint, username = data.terraform_remote_state.rds.outputs.rds.db_instance_username, password = data.terraform_remote_state.rds.outputs.rds.db_instance_password, dbname = data.terraform_remote_state.rds.outputs.rds.db_instance_name, env = var.env }))
 }
 
 
