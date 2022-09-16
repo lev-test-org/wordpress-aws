@@ -13,7 +13,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_launch_template" "wordpress_launch_template" {
-  name = "${var.name}-server-template"
+  name = "${var.env}-${var.name}-server-template"
   iam_instance_profile {
     arn = aws_iam_instance_profile.wordpress-iam-profile.arn
   }
