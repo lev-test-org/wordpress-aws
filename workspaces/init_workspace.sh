@@ -71,7 +71,8 @@ hostname = "app.terraform.io"
 organization = "TeraSky"
 workspaces { name = "${workspace_name}" }
 EOBF
-
+echo "removing current .terraform directory"
+rm -rf .terraform/
 echo "initializing terraform with updated backend"
 terraform init -upgrade -backend-config=backend_file.hcl
 
