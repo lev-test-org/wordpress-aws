@@ -37,7 +37,7 @@ resource "aws_launch_template" "wordpress_launch_template" {
     tags = merge(
       var.tags,
       {
-        Name = "${var.name}-server"
+        Name = "${var.env}-${var.name}-server"
       },
     )
   }
