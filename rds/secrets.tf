@@ -1,8 +1,8 @@
 resource "aws_secretsmanager_secret" "rds-username" {
-  name = "${var.name}-rds-user"
+  name = "${var.env}-${var.name}-rds-user"
 }
 resource "aws_secretsmanager_secret" "rds-password" {
-  name = "${var.name}-rds-password"
+  name = "${var.env}-${var.name}-rds-password"
 }
 resource "aws_secretsmanager_secret_version" "rds-username" {
   secret_id     = aws_secretsmanager_secret.rds-username.id

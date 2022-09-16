@@ -1,5 +1,5 @@
 resource aws_lambda_function db_initalizer {
- function_name = "${var.name}-lambda"
+ function_name = "${var.env}-${var.name}-lambda"
  image_uri = "572445141948.dkr.ecr.eu-west-1.amazonaws.com/db_initializer:v1"
  package_type = "Image"
  role          = aws_iam_role.iam_for_lambda.arn
@@ -20,7 +20,7 @@ resource aws_lambda_function db_initalizer {
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
-  name = "${var.name}-iam_for_lambda"
+  name = "${var.env}-${var.name}-iam_for_lambda"
 
   assume_role_policy = <<EOF
 {
@@ -40,7 +40,7 @@ EOF
 }
 
 resource "aws_iam_policy" "lambda_logging" {
-  name        = "${var.name}-lambda_logging"
+  name        = "${var.env}-${var.name}-lambda_logging"
   path        = "/"
   description = "IAM policy for logging from a lambda"
 

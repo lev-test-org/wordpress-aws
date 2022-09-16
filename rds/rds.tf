@@ -1,19 +1,23 @@
+locals {
+  dbname=replace(replace("${var.name}${var.env}","-",""),"_","")
+}
 module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "4.3.0"
 
-  identifier = "${replace(var.name,"-","")}"
+  identifier = "${local.dbname}"
 
   engine            = "mysql"
   engine_version    = "8.0.28"
   instance_class    = "db.t4g.micro"
   allocated_storage = 5
 
-  db_name  = "${replace(var.name,"-","")}"
+  db_name  = "${local.dbname}"
   username = "user"
   port     = "3306"
 
   iam_database_authentication_enabled = true
+  skip_final_snapshot = true
 
   vpc_security_group_ids = [data.terraform_remote_state.vpc.outputs.rds_sg.id]
 
