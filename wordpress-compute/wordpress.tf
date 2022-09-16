@@ -96,7 +96,7 @@ resource "aws_autoscaling_group" "wordpress_asg" {
 
 
 resource "aws_lb" "wordpress" {
-  name               = "${var.name}-lb"
+  name               = "${var.env}${var.name}-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [data.terraform_remote_state.vpc.outputs.elb_sg.id]
@@ -126,7 +126,7 @@ resource "aws_lb_listener" "wordpress_lb_listener" {
 }
 
 resource "aws_lb_target_group" "wordpress_tg" {
-  name     = "${var.name}-tg"
+  name     = "${var.env}-${var.name}-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.terraform_remote_state.vpc.outputs.vpc.vpc_id
@@ -138,7 +138,7 @@ resource "aws_autoscaling_attachment" "asg_attachment_wordpress_tg" {
 }
 
 resource "aws_iam_instance_profile" "wordpress-iam-profile" {
-  name = "${var.name}-ec2_profile"
+  name = "${var.env}-${var.name}-ec2_profile"
   role = aws_iam_role.wordpress-iam-role.name
 }
 
