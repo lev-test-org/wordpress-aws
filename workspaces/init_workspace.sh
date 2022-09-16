@@ -8,7 +8,16 @@ if [ $# -gt 2 ]; then
     exit 1
 fi
 workspace_name="$1"
+
+# Get Token
 TOKEN=$(cat ~/.terraform.d/credentials.tfrc.json | jq -r .credentials.\"app.terraform.io\".token)
+# Check if workspace exists
+echo "checking if ${workspace_name} exist"
+workspaces=$(curl -s --header "Authorization: Bearer $TOKEN" --header "Content-Type: application/vnd.api+json" https://app.terraform.io/api/v2/organizations/TeraSky/workspaces)
+workspace_exist=$(echo $workspaces | jq -r '.data[].attributes.name' | grep -w "${workspace_name}")
+if [ ! $workspace_exist ]; then
+  echo "workspace doesn't exist"
+#Create workspace
 cat <<EOPF > payload.json
 {
   "data": {
@@ -19,14 +28,9 @@ cat <<EOPF > payload.json
   }
 }
 EOPF
-response=$(curl --header "Authorization: Bearer $TOKEN" --header "Content-Type: application/vnd.api+json" --request POST  --data @payload.json  https://app.terraform.io/api/v2/organizations/TeraSky/workspaces)
+echo "creating token variable for workspace"
+response=$(curl -s --header "Authorization: Bearer $TOKEN" --header "Content-Type: application/vnd.api+json" --request POST  --data @payload.json  https://app.terraform.io/api/v2/organizations/TeraSky/workspaces)
 workspace_id=$(echo ${response} | jq .data.id)
-cat <<EOBF > backend_file.hcl
-hostname = "app.terraform.io"
-organization = "TeraSky"
-workspaces { name = "${workspace_name}" }
-EOBF
-
 cat <<EOVF > var_payload.json
 {
   "data": {
@@ -50,7 +54,7 @@ cat <<EOVF > var_payload.json
   }
 }
 EOVF
-curl \
+curl -s \
   --header "Authorization: Bearer $TOKEN" \
   --header "Content-Type: application/vnd.api+json" \
   --request POST \
@@ -58,4 +62,16 @@ curl \
   https://app.terraform.io/api/v2/vars
 
 rm var_payload.json
+else
+  echo "workspace $workspace_name exist"
+fi
+# write backend file
+cat <<EOBF > backend_file.hcl
+hostname = "app.terraform.io"
+organization = "TeraSky"
+workspaces { name = "${workspace_name}" }
+EOBF
+
+echo "initializing terraform with updated backend"
+terraform init -upgrade -backend-config=backend_file.hcl
 
