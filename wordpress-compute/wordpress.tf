@@ -143,7 +143,7 @@ resource "aws_iam_instance_profile" "wordpress-iam-profile" {
 }
 
 resource "aws_iam_role" "wordpress-iam-role" {
-  name               = "${var.name}-dev-ssm-role"
+  name               = "${var.env}-${var.name}-dev-ssm-role"
   description        = "The role for the developer resources EC2"
   assume_role_policy = <<EOF
 {
@@ -212,7 +212,7 @@ resource "aws_route53_record" "validation_record" {
 
 resource "aws_route53_record" "wordpress" {
   zone_id = data.aws_route53_zone.lev_labs.zone_id
-  name    = "${var.name}.lev-labs.com"
+  name    = "${var.env}-${var.name}.lev-labs.com"
   type    = "CNAME"
   ttl     = "300"
   records = [aws_lb.wordpress.dns_name]
