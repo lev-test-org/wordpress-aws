@@ -9,4 +9,5 @@ variable "vpc_cidr" {
 }
 variable "active_dns" {
   type = string
+  default = null
 }
