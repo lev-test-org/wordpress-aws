@@ -6,3 +6,4 @@ tfe_tags = ["wordpress","lev"]
 branch = "wp-dev"
 env = "wp-dev"
 cred_var_set = "lev-aws"
+compute_groups = ["green","blue"]
