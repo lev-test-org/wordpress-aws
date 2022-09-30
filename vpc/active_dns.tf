@@ -1,5 +1,5 @@
 resource "aws_route53_record" "wordpress" {
-  count = var.active_dns ? 1 : 0
+  count = coalesce(var.active_dns,"null")=="null" ? 1 : 0
   zone_id = data.aws_route53_zone.lev_labs.zone_id
   name    = "active-${var.name}.lev-labs.com"
   type    = "CNAME"
