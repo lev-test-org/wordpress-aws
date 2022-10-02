@@ -8,8 +8,8 @@ sudo systemctl status apache2
 sudo ufw allow in "Apache"
 sudo ufw status
 export AWS_DEFAULT_REGION=eu-west-1
-export USERNAME="$(aws secretsmanager get-secret-value --secret-id lev-wordpress-rds-user |  jq -r .SecretString )"
-export PASSWORD="$(aws secretsmanager get-secret-value --secret-id lev-wordpress-rds-password |  jq -r .SecretString )"
+export USERNAME="$(aws secretsmanager get-secret-value --secret-id ${CURRENT_ENV}-${NAME}-rds-user |  jq -r .SecretString )"
+export PASSWORD="$(aws secretsmanager get-secret-value --secret-id ${CURRENT_ENV}-${NAME}-rds-password |  jq -r .SecretString )"
 cd /tmp
 wget -c http://wordpress.org/latest.tar.gz
 tar -xzvf latest.tar.gz

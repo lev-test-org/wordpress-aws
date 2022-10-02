@@ -13,7 +13,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_launch_template" "wordpress_launch_template" {
-  name = "${var.name}-server-template"
+  name = "${var.env}-${var.name}-server-template"
   iam_instance_profile {
     arn = aws_iam_instance_profile.wordpress-iam-profile.arn
   }
@@ -37,11 +37,11 @@ resource "aws_launch_template" "wordpress_launch_template" {
     tags = merge(
       var.tags,
       {
-        Name = "${var.name}-server"
+        Name = "${var.env}-${var.name}-server"
       },
     )
   }
-  user_data = base64encode(templatefile("${path.module}/user-data.sh", { db_host = data.terraform_remote_state.rds.outputs.rds.db_instance_endpoint, username = data.terraform_remote_state.rds.outputs.rds.db_instance_username, password = data.terraform_remote_state.rds.outputs.rds.db_instance_password, dbname = data.terraform_remote_state.rds.outputs.rds.db_instance_name }))
+  user_data = base64encode(templatefile("${path.module}/user-data.sh", { db_host = data.terraform_remote_state.rds.outputs.rds.db_instance_endpoint, username = data.terraform_remote_state.rds.outputs.rds.db_instance_username, password = data.terraform_remote_state.rds.outputs.rds.db_instance_password, dbname = data.terraform_remote_state.rds.outputs.rds.db_instance_name, current_env = var.env, name = var.name }))
 }
 
 
@@ -96,7 +96,7 @@ resource "aws_autoscaling_group" "wordpress_asg" {
 
 
 resource "aws_lb" "wordpress" {
-  name               = "${var.name}-lb"
+  name               = "${var.env}${var.name}-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [data.terraform_remote_state.vpc.outputs.elb_sg.id]
@@ -126,7 +126,7 @@ resource "aws_lb_listener" "wordpress_lb_listener" {
 }
 
 resource "aws_lb_target_group" "wordpress_tg" {
-  name     = "${var.name}-tg"
+  name     = "${var.env}-${var.name}-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.terraform_remote_state.vpc.outputs.vpc.vpc_id
@@ -138,12 +138,12 @@ resource "aws_autoscaling_attachment" "asg_attachment_wordpress_tg" {
 }
 
 resource "aws_iam_instance_profile" "wordpress-iam-profile" {
-  name = "${var.name}-ec2_profile"
+  name = "${var.env}-${var.name}-ec2_profile"
   role = aws_iam_role.wordpress-iam-role.name
 }
 
 resource "aws_iam_role" "wordpress-iam-role" {
-  name               = "${var.name}-dev-ssm-role"
+  name               = "${var.env}-${var.name}-dev-ssm-role"
   description        = "The role for the developer resources EC2"
   assume_role_policy = <<EOF
 {
@@ -212,7 +212,7 @@ resource "aws_route53_record" "validation_record" {
 
 resource "aws_route53_record" "wordpress" {
   zone_id = data.aws_route53_zone.lev_labs.zone_id
-  name    = "${var.name}.lev-labs.com"
+  name    = "${var.env}-${var.name}.lev-labs.com"
   type    = "CNAME"
   ttl     = "300"
   records = [aws_lb.wordpress.dns_name]

@@ -26,3 +26,7 @@ variable "env" {
 variable "cred_var_set" {
   type = string
 }
+
+variable "compute_groups" {
+  type = list(string)
+}

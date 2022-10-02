@@ -9,4 +9,5 @@ module "workspaces" {
   branch = var.branch
   env = var.env
   cred_var_set = "lev-aws"
+  compute_groups = var.compute_groups
 }

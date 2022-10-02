@@ -4,10 +4,10 @@ variable "tags" {
 variable "name" {
   type = string
 }
+
 variable "vpc_cidr" {
   type = string
 }
-variable "active_dns" {
+variable "env" {
   type = string
-  default = null
 }
